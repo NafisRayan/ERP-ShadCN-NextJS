@@ -4,9 +4,9 @@ import { notFound } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 
 interface RoleDetailPageProps {
-  params: {
+  params: Promise<{
     roleId: string;
-  };
+  }>;
 }
 
 export default async function RoleDetailPage({ params }: RoleDetailPageProps) {
@@ -14,7 +14,8 @@ export default async function RoleDetailPage({ params }: RoleDetailPageProps) {
   const { organizationId } = await requireServerAdmin();
 
   // Fetch role
-  const role = await getRoleById(params.roleId, organizationId);
+  const { roleId } = await params;
+  const role = await getRoleById(roleId, organizationId);
 
   if (!role) {
     notFound();

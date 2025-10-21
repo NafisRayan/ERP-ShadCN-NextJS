@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Loader2, Package, Users, ShoppingCart, UserCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
@@ -47,7 +47,7 @@ export function GlobalSearch() {
   const debounceTimerRef = useRef<NodeJS.Timeout>();
 
   // Fetch autocomplete suggestions
-  const fetchSuggestions = useCallback(async (searchQuery: string) => {
+  const fetchSuggestions = async (searchQuery: string) => {
     if (searchQuery.trim().length < 2) {
       setResults([]);
       setIsOpen(false);
@@ -71,7 +71,7 @@ export function GlobalSearch() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   // Debounced search
   useEffect(() => {

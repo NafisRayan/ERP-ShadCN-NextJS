@@ -12,10 +12,10 @@ import { updateRoleSchema } from '@/lib/validations/role';
  */
 async function getRoleHandler(
   request: NextRequest,
-  context: { userId: string; organizationId: string; params?: any }
+  context: { userId: string; organizationId: string; params: Promise<{ roleId: string }> }
 ) {
   try {
-    const { roleId } = context.params;
+    const { roleId } = await context.params;
 
     const role = await getRoleById(roleId, context.organizationId);
 
@@ -50,10 +50,10 @@ async function getRoleHandler(
  */
 async function updateRoleHandler(
   request: NextRequest,
-  context: { userId: string; organizationId: string; params?: any }
+  context: { userId: string; organizationId: string; params: Promise<{ roleId: string }> }
 ) {
   try {
-    const { roleId } = context.params;
+    const { roleId } = await context.params;
     const body = await request.json();
 
     // Validate input
@@ -116,10 +116,10 @@ async function updateRoleHandler(
  */
 async function deleteRoleHandler(
   request: NextRequest,
-  context: { userId: string; organizationId: string; params?: any }
+  context: { userId: string; organizationId: string; params: Promise<{ roleId: string }> }
 ) {
   try {
-    const { roleId } = context.params;
+    const { roleId} = await context.params;
 
     await deleteRole(roleId, context.organizationId);
 

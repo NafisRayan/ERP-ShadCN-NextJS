@@ -57,7 +57,7 @@ export default function RolesPage() {
       const data = await response.json();
 
       if (data.success) {
-        setRoles(roles.filter((role) => role._id.toString() !== roleId));
+        setRoles(roles.filter((role) => String(role._id) !== roleId));
       } else {
         alert(data.error || 'Failed to delete role');
       }
@@ -108,7 +108,7 @@ export default function RolesPage() {
 
       <div className="grid gap-4">
         {roles.map((role) => (
-          <Card key={role._id.toString()} className="p-6">
+          <Card key={String(role._id)} className="p-6">
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <div className="flex items-center gap-3">
@@ -150,7 +150,7 @@ export default function RolesPage() {
                       variant="outline"
                       onClick={() =>
                         router.push(
-                          `/dashboard/settings/roles/${role._id.toString()}/edit`
+                          `/dashboard/settings/roles/${String(role._id)}/edit`
                         )
                       }
                     >
@@ -159,7 +159,7 @@ export default function RolesPage() {
                     <Button
                       variant="outline"
                       onClick={() =>
-                        handleDelete(role._id.toString(), role.name)
+                        handleDelete(String(role._id), role.name)
                       }
                     >
                       Delete
@@ -171,7 +171,7 @@ export default function RolesPage() {
                     variant="outline"
                     onClick={() =>
                       router.push(
-                        `/dashboard/settings/roles/${role._id.toString()}`
+                        `/dashboard/settings/roles/${String(role._id)}`
                       )
                     }
                   >

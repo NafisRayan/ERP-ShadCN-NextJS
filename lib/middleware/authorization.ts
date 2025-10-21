@@ -187,14 +187,14 @@ export function unauthenticatedResponse(message: string = 'Authentication requir
 /**
  * Wrapper function to protect API routes with permission checks
  */
-export function withPermission(
+export function withPermission<T = any>(
   handler: (
     request: NextRequest,
-    context: { userId: string; organizationId: string; params?: any }
+    context: { userId: string; organizationId: string; params: Promise<T> }
   ) => Promise<NextResponse>,
   options: AuthorizationOptions
 ) {
-  return async (request: NextRequest, context?: { params?: any }) => {
+  return async (request: NextRequest, context: { params: Promise<T> }) => {
     const authResult = await requirePermission(request, options);
 
     if (!authResult.authorized) {
@@ -207,7 +207,7 @@ export function withPermission(
     return handler(request, {
       userId: authResult.userId!,
       organizationId: authResult.organizationId!,
-      params: context?.params,
+      params: context.params,
     });
   };
 }
@@ -215,13 +215,13 @@ export function withPermission(
 /**
  * Wrapper function to protect API routes with admin check
  */
-export function withAdmin(
+export function withAdmin<T = any>(
   handler: (
     request: NextRequest,
-    context: { userId: string; organizationId: string; params?: any }
+    context: { userId: string; organizationId: string; params: Promise<T> }
   ) => Promise<NextResponse>
 ) {
-  return async (request: NextRequest, context?: { params?: any }) => {
+  return async (request: NextRequest, context: { params: Promise<T> }) => {
     const authResult = await requireAdmin(request);
 
     if (!authResult.authorized) {
@@ -234,7 +234,7 @@ export function withAdmin(
     return handler(request, {
       userId: authResult.userId!,
       organizationId: authResult.organizationId!,
-      params: context?.params,
+      params: context.params,
     });
   };
 }
