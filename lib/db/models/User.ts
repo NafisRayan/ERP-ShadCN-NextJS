@@ -103,7 +103,11 @@ UserSchema.methods.comparePassword = async function (
   }
 };
 
-const User: Model<IUser> =
-  mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+// Clear cached model to ensure schema updates are applied
+if (mongoose.models.User) {
+  delete mongoose.models.User;
+}
+
+const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
 
 export default User;

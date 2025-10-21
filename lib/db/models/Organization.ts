@@ -54,11 +54,11 @@ const OrganizationSchema = new Schema<IOrganization>(
       trim: true,
     },
     address: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
+      street: { type: String, default: '' },
+      city: { type: String, default: '' },
+      state: { type: String, default: '' },
+      postalCode: { type: String, default: '' },
+      country: { type: String, default: '' },
     },
     logo: {
       type: String,
@@ -99,8 +99,12 @@ const OrganizationSchema = new Schema<IOrganization>(
 // Indexes
 OrganizationSchema.index({ email: 1 });
 
+// Clear cached model to ensure schema updates are applied
+if (mongoose.models.Organization) {
+  delete mongoose.models.Organization;
+}
+
 const Organization: Model<IOrganization> =
-  mongoose.models.Organization ||
   mongoose.model<IOrganization>('Organization', OrganizationSchema);
 
 export default Organization;
