@@ -42,7 +42,11 @@
   - Create authentication middleware for protected routes
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 4. Build role-based access control (RBAC) system
+- [x] 4. Build role-based access control (RBAC) system
+
+
+
+
   - Create Role model with permissions schema
   - Implement permission checking utilities
   - Create authorization middleware for API routes

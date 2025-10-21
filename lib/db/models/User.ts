@@ -8,6 +8,7 @@ export interface IUser extends Document {
   password: string;
   name: string;
   role: UserRole;
+  roleId?: mongoose.Types.ObjectId; // Reference to custom Role
   organizationId: mongoose.Types.ObjectId;
   avatar?: string;
   isActive: boolean;
@@ -45,6 +46,10 @@ const UserSchema = new Schema<IUser>(
       type: String,
       enum: ['admin', 'manager', 'employee', 'user'],
       default: 'user',
+    },
+    roleId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Role',
     },
     organizationId: {
       type: Schema.Types.ObjectId,
