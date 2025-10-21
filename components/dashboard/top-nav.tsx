@@ -1,8 +1,7 @@
 'use client';
 
-import { Search, Bell, User, LogOut, Settings } from 'lucide-react';
+import { Bell, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { MobileSidebar } from './mobile-sidebar';
+import { GlobalSearch } from '@/components/shared/global-search';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -50,14 +50,7 @@ export function TopNav({ user }: TopNavProps) {
 
       {/* Search */}
       <div className="flex-1">
-        <form className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="pl-10 md:w-[300px] lg:w-[400px]"
-          />
-        </form>
+        <GlobalSearch />
       </div>
 
       {/* Notifications */}
