@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withPermission } from '@/lib/middleware/authorization';
-import { createScopedQuery } from '@/lib/utils/dataIsolation';
+import { requirePermission } from '@/lib/middleware/authorization';
 import connectDB from '@/lib/db/mongodb';
 
 /**
@@ -10,16 +9,29 @@ import connectDB from '@/lib/db/mongodb';
  * 
  * This route requires 'read' permission on 'products' resource
  */
-async function getProtectedDataHandler(
-  request: NextRequest,
-  context: { userId: string; organizationId: string }
-) {
+export async function GET(request: NextRequest) {
   try {
+    // Check permissions
+    const authResult = await requirePermission(request, {
+      resource: 'products',
+      action: 'read',
+    });
+
+    if (!authResult.authorized) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: authResult.error || 'Unauthorized',
+        },
+        { status: authResult.error?.includes('Authentication') ? 401 : 403 }
+      );
+    }
+
     await connectDB();
 
     // Example: Using scoped query to automatically filter by organization
     // const Product = (await import('@/lib/db/models/Product')).default;
-    // const scopedQuery = createScopedQuery(Product, context.organizationId);
+    // const scopedQuery = createScopedQuery(Product, authResult.organizationId!);
     // const products = await scopedQuery.find({ isActive: true }).limit(10);
 
     // For demonstration purposes, return context info
@@ -27,25 +39,19 @@ async function getProtectedDataHandler(
       success: true,
       message: 'Access granted',
       data: {
-        userId: context.userId,
-        organizationId: context.organizationId,
+        userId: authResult.userId,
+        organizationId: authResult.organizationId,
         info: 'This data is automatically filtered by your organization',
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Protected route error:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch data',
+        error: error instanceof Error ? error.message : 'Failed to fetch data',
       },
       { status: 500 }
     );
   }
 }
-
-// Protect the route with permission check
-export const GET = withPermission(getProtectedDataHandler, {
-  resource: 'products',
-  action: 'read',
-});

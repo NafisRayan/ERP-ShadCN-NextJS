@@ -226,7 +226,7 @@ export default function NewRolePage() {
 
             {permissions.length === 0 && (
               <div className="text-center py-8 text-gray-500">
-                No permissions added yet. Click "Add Permission" to get started.
+                No permissions added yet. Click &quot;Add Permission&quot; to get started.
               </div>
             )}
           </div>
