@@ -63,7 +63,7 @@ export function buildPaginatedResponse<T>(
 export function sanitizeDocument<T extends Record<string, any>>(
   doc: T
 ): Omit<T, '__v'> & { id: string } {
-  const sanitized = { ...doc };
+  const sanitized: any = { ...doc };
   
   if (sanitized._id) {
     sanitized.id = sanitized._id.toString();

@@ -28,7 +28,9 @@
   - Set up environment variables configuration
   - _Requirements: 19.4_
 
-- [-] 3. Implement authentication system with NextAuth.js
+- [x] 3. Implement authentication system with NextAuth.js
+
+
 
 
 

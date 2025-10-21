@@ -1,17 +1,21 @@
 import mongoose from 'mongoose';
 
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
+
 declare global {
-  var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
-  };
+  var mongoose: MongooseCache | undefined;
 }
+
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
 if (!global.mongoose) {
-  global.mongoose = { conn: null, promise: null };
+  global.mongoose = cached;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -36,12 +40,12 @@ const options: ConnectionOptions = {
 };
 
 async function connectDB(): Promise<typeof mongoose> {
-  if (global.mongoose.conn) {
-    return global.mongoose.conn;
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  if (!global.mongoose.promise) {
-    global.mongoose.promise = mongoose
+  if (!cached.promise) {
+    cached.promise = mongoose
       .connect(MONGODB_URI, options)
       .then((mongoose) => {
         console.log('✅ MongoDB connected successfully');
@@ -49,19 +53,19 @@ async function connectDB(): Promise<typeof mongoose> {
       })
       .catch((error) => {
         console.error('❌ MongoDB connection error:', error);
-        global.mongoose.promise = null;
+        cached.promise = null;
         throw error;
       });
   }
 
   try {
-    global.mongoose.conn = await global.mongoose.promise;
+    cached.conn = await cached.promise;
   } catch (error) {
-    global.mongoose.promise = null;
+    cached.promise = null;
     throw error;
   }
 
-  return global.mongoose.conn;
+  return cached.conn;
 }
 
 // Handle connection events
