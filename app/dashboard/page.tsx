@@ -1,13 +1,16 @@
 import { auth } from '@/lib/auth';
 import { DashboardService } from '@/lib/services/dashboard.service';
-import { DashboardMetrics } from '@/components/dashboard/dashboard-metrics';
-import { RevenueChart } from '@/components/dashboard/revenue-chart';
-import { SalesOverview } from '@/components/dashboard/sales-overview';
-import { RecentActivity } from '@/components/dashboard/recent-activity';
+import { CustomizableDashboard } from '@/components/dashboard/customizable-dashboard';
 import { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-async function DashboardContent({ organizationId }: { organizationId: string }) {
+async function DashboardContent({ 
+  organizationId, 
+  userRole 
+}: { 
+  organizationId: string;
+  userRole: string;
+}) {
   try {
     const [metrics, revenueData, salesData, activities] = await Promise.all([
       DashboardService.getMetrics(organizationId),
@@ -17,19 +20,10 @@ async function DashboardContent({ organizationId }: { organizationId: string }) 
     ]);
 
     return (
-      <>
-        {/* KPI Cards with real-time updates */}
-        <DashboardMetrics initialData={metrics} />
-
-        {/* Charts */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          <RevenueChart data={revenueData} />
-          <SalesOverview data={salesData} />
-        </div>
-
-        {/* Recent Activity */}
-        <RecentActivity activities={activities} />
-      </>
+      <CustomizableDashboard
+        data={{ metrics, revenueData, salesData, activities }}
+        userRole={userRole}
+      />
     );
   } catch (error) {
     console.error('Error loading dashboard data:', error);
@@ -118,7 +112,10 @@ export default async function DashboardPage() {
       </div>
 
       <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardContent organizationId={session.user.organizationId} />
+        <DashboardContent 
+          organizationId={session.user.organizationId}
+          userRole={session.user.role}
+        />
       </Suspense>
     </div>
   );
