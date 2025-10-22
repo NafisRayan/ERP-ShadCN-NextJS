@@ -8,18 +8,12 @@ export async function connectToDatabase() {
     return { client: cachedClient, db: cachedDb }
   }
 
-  const uri =
-    process.env.MONGODB_URI ||
-    "mongodb+srv://vaugheu:tempA@cluster0.yfpgp8o.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
-  if (!uri) {
-    throw new Error("MONGODB_URI environment variable is not set")
-  }
+  const uri = "mongodb+srv://vaugheu:tempA@cluster0.yfpgp8o.mongodb.net/erp-system?retryWrites=true&w=majority&appName=Cluster0"
 
   const client = new MongoClient(uri)
   await client.connect()
 
-  const db = client.db("erp_system")
+  const db = client.db("erp-system")
 
   cachedClient = client
   cachedDb = db

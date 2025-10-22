@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Aggregate invoice data
-    invoices.forEach((inv) => {
+    invoices.forEach((inv: any) => {
       const month = new Date(inv.issueDate).toLocaleString("default", { month: "short" })
       if (monthlyData[month]) {
         monthlyData[month].revenue += inv.total || 0
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Aggregate order data
-    orders.forEach((order) => {
+    orders.forEach((order: any) => {
       const month = new Date(order.orderDate).toLocaleString("default", { month: "short" })
       if (monthlyData[month]) {
         monthlyData[month].orders += 1

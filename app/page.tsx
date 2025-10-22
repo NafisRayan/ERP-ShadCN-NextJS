@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Icons } from "@/components/icons"
+import { AlertCircle, LogIn, UserPlus } from "lucide-react"
 
 export default function AuthPage() {
   const router = useRouter()
@@ -103,7 +103,7 @@ export default function AuthPage() {
           <CardContent>
             {error && (
               <Alert variant="destructive" className="mb-4">
-                <Icons.AlertCircle />
+                <AlertCircle />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -139,7 +139,7 @@ export default function AuthPage() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    <Icons.LogIn />
+                    <LogIn />
                     <span className="ml-2">{isLoading ? "Signing in..." : "Sign In"}</span>
                   </Button>
                 </form>
@@ -192,7 +192,7 @@ export default function AuthPage() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    <Icons.UserPlus />
+                    <UserPlus />
                     <span className="ml-2">{isLoading ? "Creating account..." : "Create Account"}</span>
                   </Button>
                 </form>

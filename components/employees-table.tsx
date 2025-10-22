@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 import { Edit2, Trash2, Search } from "lucide-react"
 
 interface Employee {
@@ -96,15 +97,9 @@ export function EmployeesTable({ onRefresh }: { onRefresh?: () => void }) {
                 <TableCell>{employee.position}</TableCell>
                 <TableCell>${employee.salary.toLocaleString()}</TableCell>
                 <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium capitalize ${
-                      employee.status === "active"
-                        ? "bg-green-500/20 text-green-700"
-                        : "bg-yellow-500/20 text-yellow-700"
-                    }`}
-                  >
+                  <Badge variant={employee.status === "active" ? "default" : "secondary"}>
                     {employee.status}
-                  </span>
+                  </Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Sidebar } from "@/components/sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -32,29 +33,28 @@ export default function SettingsPage() {
   if (!isAuthenticated) return null
 
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-
-      <div className="flex-1 flex flex-col md:ml-64">
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
         <Header />
+        <main className="flex flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Settings</h1>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              Manage your account and system preferences
+            </p>
+          </div>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-              <p className="text-muted-foreground mt-2">Manage your account and system preferences</p>
-            </div>
-
-            <Tabs defaultValue="account" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+          <Tabs defaultValue="account" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
                 <TabsTrigger value="account">Account</TabsTrigger>
                 <TabsTrigger value="security">Security</TabsTrigger>
                 <TabsTrigger value="notifications">Notifications</TabsTrigger>
                 <TabsTrigger value="organization">Organization</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="account" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="account" className="mt-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Account Information</CardTitle>
                     <CardDescription>Update your account details</CardDescription>
@@ -77,8 +77,8 @@ export default function SettingsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="security" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="security" className="mt-4 space-y-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Password</CardTitle>
                     <CardDescription>Change your password</CardDescription>
@@ -100,7 +100,7 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-border/50">
+                <Card>
                   <CardHeader>
                     <CardTitle>Two-Factor Authentication</CardTitle>
                     <CardDescription>Add an extra layer of security</CardDescription>
@@ -117,8 +117,8 @@ export default function SettingsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="notifications" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="notifications" className="mt-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Notification Preferences</CardTitle>
                     <CardDescription>Manage how you receive notifications</CardDescription>
@@ -156,8 +156,8 @@ export default function SettingsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="organization" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="organization" className="mt-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Organization Settings</CardTitle>
                     <CardDescription>Manage organization-wide settings</CardDescription>
@@ -186,7 +186,7 @@ export default function SettingsPage() {
             </Tabs>
           </div>
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

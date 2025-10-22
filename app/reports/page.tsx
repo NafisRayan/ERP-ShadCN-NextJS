@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Sidebar } from "@/components/sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -41,62 +42,71 @@ export default function ReportsPage() {
   if (!isAuthenticated) return null
 
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-
-      <div className="flex-1 flex flex-col md:ml-64">
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
         <Header />
+        <main className="flex flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Reports & Analytics</h1>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              Business insights and performance metrics
+            </p>
+          </div>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">Reports & Analytics</h1>
-                <p className="text-muted-foreground mt-2">Business insights and performance metrics</p>
-              </div>
-            </div>
+          <ReportSummary />
 
-            <ReportSummary />
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Export Data</CardTitle>
+              <CardDescription>Download reports in CSV format</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ExportButtons />
+            </CardContent>
+          </Card>
 
-            <Card className="border-border/50">
-              <CardHeader>
-                <CardTitle>Export Data</CardTitle>
-                <CardDescription>Download reports in CSV format</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ExportButtons />
-              </CardContent>
-            </Card>
-
-            <Tabs defaultValue="trends" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+          <Tabs defaultValue="trends" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="trends">Monthly Trends</TabsTrigger>
                 <TabsTrigger value="analysis">Analysis</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="trends" className="space-y-4">
-                <Card className="border-border/50">
-                  <CardHeader>
-                    <CardTitle>Revenue & Orders Trend</CardTitle>
-                    <CardDescription>Monthly revenue and order volume</CardDescription>
-                  </CardHeader>
-                  <CardContent>
+            <TabsContent value="trends" className="mt-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle>Revenue & Orders Trend</CardTitle>
+                  <CardDescription>Monthly revenue and order volume</CardDescription>
+                </CardHeader>
+                <CardContent>
                     {monthlyTrends.length > 0 ? (
                       <ResponsiveContainer width="100%" height={400}>
                         <LineChart data={monthlyTrends}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                          <XAxis dataKey="month" stroke="var(--muted-foreground)" />
-                          <YAxis stroke="var(--muted-foreground)" />
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <XAxis 
+                            dataKey="month" 
+                            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                          />
+                          <YAxis 
+                            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                          />
                           <Tooltip
                             contentStyle={{
-                              backgroundColor: "var(--card)",
-                              border: "1px solid var(--border)",
-                              borderRadius: "8px",
+                              backgroundColor: "hsl(var(--popover))",
+                              border: "1px solid hsl(var(--border))",
+                              borderRadius: "var(--radius)",
+                              color: "hsl(var(--popover-foreground))",
+                            }}
+                            itemStyle={{
+                              color: "hsl(var(--popover-foreground))",
+                            }}
+                            labelStyle={{ 
+                              color: "hsl(var(--popover-foreground))",
                             }}
                           />
                           <Legend />
-                          <Line type="monotone" dataKey="revenue" stroke="var(--chart-1)" strokeWidth={2} />
-                          <Line type="monotone" dataKey="orders" stroke="var(--chart-2)" strokeWidth={2} />
+                          <Line type="monotone" dataKey="revenue" stroke="hsl(var(--chart-1))" strokeWidth={2} />
+                          <Line type="monotone" dataKey="orders" stroke="hsl(var(--chart-2))" strokeWidth={2} />
                         </LineChart>
                       </ResponsiveContainer>
                     ) : (
@@ -108,67 +118,66 @@ export default function ReportsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="analysis" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Card className="border-border/50">
+            <TabsContent value="analysis" className="mt-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Card>
                     <CardHeader>
                       <CardTitle>Key Performance Indicators</CardTitle>
                       <CardDescription>Current business metrics</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Order Fulfillment Rate</span>
+                        <div className="flex justify-between items-center pb-2 border-b">
+                          <span className="text-sm text-muted-foreground">Order Fulfillment Rate</span>
                           <span className="font-bold">94%</span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Customer Retention</span>
+                        <div className="flex justify-between items-center pb-2 border-b">
+                          <span className="text-sm text-muted-foreground">Customer Retention</span>
                           <span className="font-bold">87%</span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Inventory Accuracy</span>
+                        <div className="flex justify-between items-center pb-2 border-b">
+                          <span className="text-sm text-muted-foreground">Inventory Accuracy</span>
                           <span className="font-bold">99%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm">Vendor Performance</span>
+                          <span className="text-sm text-muted-foreground">Vendor Performance</span>
                           <span className="font-bold">96%</span>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
-                  <Card className="border-border/50">
-                    <CardHeader>
-                      <CardTitle>Business Health</CardTitle>
-                      <CardDescription>Overall system status</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">System Uptime</span>
-                          <span className="font-bold text-green-600">99.9%</span>
-                        </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Data Integrity</span>
-                          <span className="font-bold text-green-600">100%</span>
-                        </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Active Users</span>
-                          <span className="font-bold">12</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">Last Backup</span>
-                          <span className="font-bold">2 hours ago</span>
-                        </div>
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle>Business Health</CardTitle>
+                    <CardDescription>Overall system status</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center pb-2 border-b">
+                        <span className="text-sm">System Uptime</span>
+                        <span className="font-bold text-green-600 dark:text-green-500">99.9%</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
+                      <div className="flex justify-between items-center pb-2 border-b">
+                        <span className="text-sm">Data Integrity</span>
+                        <span className="font-bold text-green-600 dark:text-green-500">100%</span>
+                      </div>
+                      <div className="flex justify-between items-center pb-2 border-b">
+                        <span className="text-sm">Active Users</span>
+                        <span className="font-bold">12</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Last Backup</span>
+                        <span className="font-bold">2 hours ago</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

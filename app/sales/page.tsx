@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Sidebar } from "@/components/sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SalesMetrics } from "@/components/sales-metrics"
@@ -61,40 +62,38 @@ export default function SalesPage() {
   if (!isAuthenticated) return null
 
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-
-      <div className="flex-1 flex flex-col md:ml-64">
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
         <Header />
-
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">Sales Orders</h1>
-                <p className="text-muted-foreground mt-2">Manage customer orders and track shipments</p>
-              </div>
-              <CreateOrderDialog onOrderCreated={() => setRefreshTrigger((prev) => prev + 1)} />
+        <main className="flex flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Sales Orders</h1>
+              <p className="text-sm text-muted-foreground sm:text-base">
+                Manage customer orders and track shipments
+              </p>
             </div>
-
-            <SalesMetrics refreshTrigger={refreshTrigger} />
-
-            <Card className="border-border/50">
-              <CardHeader>
-                <CardTitle>Orders</CardTitle>
-                <CardDescription>All sales orders</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <OrdersTable
-                  onDelete={handleDeleteOrder}
-                  onStatusChange={handleStatusChange}
-                  refreshTrigger={refreshTrigger}
-                />
-              </CardContent>
-            </Card>
+            <CreateOrderDialog onOrderCreated={() => setRefreshTrigger((prev) => prev + 1)} />
           </div>
+
+          <SalesMetrics refreshTrigger={refreshTrigger} />
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Orders</CardTitle>
+              <CardDescription>All sales orders</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0 sm:p-6">
+              <OrdersTable
+                onDelete={handleDeleteOrder}
+                onStatusChange={handleStatusChange}
+                refreshTrigger={refreshTrigger}
+              />
+            </CardContent>
+          </Card>
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

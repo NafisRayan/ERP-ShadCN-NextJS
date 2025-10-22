@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Icons } from "@/components/icons"
+import { TrendingUp, ArrowUpRight, ShoppingCart, Package, ArrowDownRight, Users } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
 
 interface Metrics {
   totalRevenue: number
@@ -38,14 +39,14 @@ export function DashboardMetrics() {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="border-border/50">
+          <Card key={i}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-4 rounded-full" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-32 mb-2" />
-              <Skeleton className="h-3 w-40" />
+              <Skeleton className="h-7 w-28 mb-1" />
+              <Skeleton className="h-3 w-36" />
             </CardContent>
           </Card>
         ))}
@@ -57,62 +58,68 @@ export function DashboardMetrics() {
     return null
   }
 
+  const cards = [
+    {
+      title: "Total Revenue",
+      value: `$${metrics.totalRevenue.toLocaleString()}`,
+      change: "+20.1% from last month",
+      icon: TrendingUp,
+      trend: "up",
+      iconBg: "bg-green-500/10 dark:bg-green-500/20",
+      iconColor: "text-green-600 dark:text-green-500",
+    },
+    {
+      title: "Total Orders",
+      value: metrics.totalOrders.toString(),
+      change: `${metrics.pendingOrders} pending`,
+      icon: ShoppingCart,
+      trend: "neutral",
+      iconBg: "bg-blue-500/10 dark:bg-blue-500/20",
+      iconColor: "text-blue-600 dark:text-blue-500",
+    },
+    {
+      title: "Inventory Value",
+      value: `$${metrics.totalInventoryValue.toLocaleString()}`,
+      change: `${metrics.lowStockItems} low stock items`,
+      icon: Package,
+      trend: "down",
+      iconBg: "bg-orange-500/10 dark:bg-orange-500/20",
+      iconColor: "text-orange-600 dark:text-orange-500",
+    },
+    {
+      title: "Active Employees",
+      value: metrics.totalEmployees.toString(),
+      change: "+8 new hires",
+      icon: Users,
+      trend: "up",
+      iconBg: "bg-purple-500/10 dark:bg-purple-500/20",
+      iconColor: "text-purple-600 dark:text-purple-500",
+    },
+  ]
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card className="border-border/50">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-          <Icons.TrendingUp />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">${metrics.totalRevenue.toLocaleString()}</div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <Icons.ArrowUpRight />
-            <span>+20.1% from last month</span>
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="border-border/50">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-          <Icons.ShoppingCart />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{metrics.totalOrders}</div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <span className="text-yellow-500">{metrics.pendingOrders} pending</span>
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="border-border/50">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
-          <Icons.Package />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">${metrics.totalInventoryValue.toLocaleString()}</div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <Icons.ArrowDownRight />
-            <span>{metrics.lowStockItems} low stock items</span>
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="border-border/50">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Active Employees</CardTitle>
-          <Icons.Users />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{metrics.totalEmployees}</div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <Icons.ArrowUpRight />
-            <span>+8 new hires</span>
-          </p>
-        </CardContent>
-      </Card>
+      {cards.map((card, index) => {
+        const Icon = card.icon
+        return (
+          <Card key={index}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+              <div className={cn("rounded-full p-2", card.iconBg)}>
+                <Icon className={cn("h-4 w-4", card.iconColor)} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{card.value}</div>
+              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                {card.trend === "up" && <ArrowUpRight className="h-3 w-3 text-green-600 dark:text-green-500" />}
+                {card.trend === "down" && <ArrowDownRight className="h-3 w-3 text-orange-600 dark:text-orange-500" />}
+                <span>{card.change}</span>
+              </p>
+            </CardContent>
+          </Card>
+        )
+      })}
     </div>
   )
 }
