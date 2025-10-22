@@ -6,7 +6,10 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "seed": "node scripts/seed-demo-data.js",
+    "seed:demo": "node scripts/seed-demo-data.js",
+    "check:db": "node scripts/check-mongodb.js"
   },
   "dependencies": {
     "@aws-sdk/credential-providers": "latest",
