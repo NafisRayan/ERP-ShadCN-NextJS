@@ -12,6 +12,7 @@ import { VendorsTable } from "@/components/vendors-table"
 import { CreatePODialog } from "@/components/create-po-dialog"
 import { AddVendorDialog } from "@/components/add-vendor-dialog"
 import { Skeleton } from "@/components/ui/skeleton"
+import { FileText, FileClock, DollarSign, CheckCircle } from "lucide-react"
 
 export default function PurchasingPage() {
   const router = useRouter()
@@ -133,35 +134,51 @@ export default function PurchasingPage() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card>
-                <CardHeader className="pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total POs</CardTitle>
+                  <div className="rounded-full p-2 bg-blue-500/10 dark:bg-blue-500/20">
+                    <FileText className="h-4 w-4 text-blue-600 dark:text-blue-500" />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{metrics.totalPOs}</div>
+                  <p className="text-xs text-muted-foreground mt-1">All purchase orders</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className="pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Draft</CardTitle>
+                  <div className="rounded-full p-2 bg-orange-500/10 dark:bg-orange-500/20">
+                    <FileClock className="h-4 w-4 text-orange-600 dark:text-orange-500" />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{metrics.draftPOs}</div>
+                  <p className="text-xs text-muted-foreground mt-1">Pending approval</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className="pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Spend</CardTitle>
+                  <div className="rounded-full p-2 bg-purple-500/10 dark:bg-purple-500/20">
+                    <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-500" />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">${metrics.totalSpend.toLocaleString()}</div>
+                  <p className="text-xs text-muted-foreground mt-1">Total procurement</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className="pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Received</CardTitle>
+                  <div className="rounded-full p-2 bg-green-500/10 dark:bg-green-500/20">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-500" />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{metrics.receivedPOs}</div>
+                  <p className="text-xs text-muted-foreground mt-1">Completed orders</p>
                 </CardContent>
               </Card>
             </div>
