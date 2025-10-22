@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Icons } from "@/components/icons"
+import { Eye, Trash2 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface Order {
@@ -104,10 +104,10 @@ export function OrdersTable({ onDelete, onStatusChange, refreshTrigger }: Orders
                 <TableCell>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="sm">
-                      <Icons.Eye />
+                      <Eye />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => onDelete(order._id)}>
-                      <Icons.Trash2 />
+                      <Trash2 />
                     </Button>
                   </div>
                 </TableCell>

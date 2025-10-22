@@ -15,11 +15,11 @@ export async function GET(request: NextRequest) {
 
     // Calculate revenue from invoices
     const invoices = await invoicesCollection.find({ status: "paid" }).toArray()
-    const totalRevenue = invoices.reduce((sum, inv) => sum + (inv.total || 0), 0)
+  const totalRevenue = invoices.reduce((sum: number, inv: any) => sum + (inv.total || 0), 0)
 
     // Calculate inventory value
     const products = await productsCollection.find({}).toArray()
-    const totalInventoryValue = products.reduce((sum, prod) => sum + (prod.quantity * prod.cost || 0), 0)
+  const totalInventoryValue = products.reduce((sum: number, prod: any) => sum + (prod.quantity * prod.cost || 0), 0)
 
     // Count pending orders
     const pendingOrders = await ordersCollection.countDocuments({ status: "pending" })

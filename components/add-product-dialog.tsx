@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Icons } from "@/components/icons"
+import { Plus } from "lucide-react"
 
 interface AddProductDialogProps {
   onProductAdded: () => void
@@ -78,7 +78,7 @@ export function AddProductDialog({ onProductAdded }: AddProductDialogProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2">
-          <Icons.Plus />
+          <Plus />
           Add Product
         </Button>
       </DialogTrigger>
