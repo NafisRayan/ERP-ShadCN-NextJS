@@ -48,14 +48,14 @@ export function SalesMetrics({ refreshTrigger }: SalesMetricsProps) {
 
   if (loading) {
     return (
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="border-border/50">
+          <Card key={i}>
             <CardHeader className="pb-2">
               <Skeleton className="h-4 w-24" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-7 w-16" />
             </CardContent>
           </Card>
         ))}
@@ -66,8 +66,8 @@ export function SalesMetrics({ refreshTrigger }: SalesMetricsProps) {
   if (!metrics) return null
 
   return (
-    <div className="grid gap-4 md:grid-cols-4">
-      <Card className="border-border/50">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
         </CardHeader>
@@ -75,7 +75,7 @@ export function SalesMetrics({ refreshTrigger }: SalesMetricsProps) {
           <div className="text-2xl font-bold">{metrics.totalOrders}</div>
         </CardContent>
       </Card>
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Pending</CardTitle>
         </CardHeader>
@@ -83,7 +83,7 @@ export function SalesMetrics({ refreshTrigger }: SalesMetricsProps) {
           <div className="text-2xl font-bold">{metrics.pendingOrders}</div>
         </CardContent>
       </Card>
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
         </CardHeader>
@@ -91,7 +91,7 @@ export function SalesMetrics({ refreshTrigger }: SalesMetricsProps) {
           <div className="text-2xl font-bold">${metrics.totalRevenue.toLocaleString()}</div>
         </CardContent>
       </Card>
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Delivered</CardTitle>
         </CardHeader>

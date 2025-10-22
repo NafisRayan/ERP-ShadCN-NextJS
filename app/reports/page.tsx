@@ -82,19 +82,31 @@ export default function ReportsPage() {
                     {monthlyTrends.length > 0 ? (
                       <ResponsiveContainer width="100%" height={400}>
                         <LineChart data={monthlyTrends}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                          <XAxis dataKey="month" stroke="var(--muted-foreground)" />
-                          <YAxis stroke="var(--muted-foreground)" />
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <XAxis 
+                            dataKey="month" 
+                            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                          />
+                          <YAxis 
+                            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                          />
                           <Tooltip
                             contentStyle={{
-                              backgroundColor: "var(--card)",
-                              border: "1px solid var(--border)",
-                              borderRadius: "8px",
+                              backgroundColor: "hsl(var(--popover))",
+                              border: "1px solid hsl(var(--border))",
+                              borderRadius: "var(--radius)",
+                              color: "hsl(var(--popover-foreground))",
+                            }}
+                            itemStyle={{
+                              color: "hsl(var(--popover-foreground))",
+                            }}
+                            labelStyle={{ 
+                              color: "hsl(var(--popover-foreground))",
                             }}
                           />
                           <Legend />
-                          <Line type="monotone" dataKey="revenue" stroke="var(--chart-1)" strokeWidth={2} />
-                          <Line type="monotone" dataKey="orders" stroke="var(--chart-2)" strokeWidth={2} />
+                          <Line type="monotone" dataKey="revenue" stroke="hsl(var(--chart-1))" strokeWidth={2} />
+                          <Line type="monotone" dataKey="orders" stroke="hsl(var(--chart-2))" strokeWidth={2} />
                         </LineChart>
                       </ResponsiveContainer>
                     ) : (
@@ -115,20 +127,20 @@ export default function ReportsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Order Fulfillment Rate</span>
+                        <div className="flex justify-between items-center pb-2 border-b">
+                          <span className="text-sm text-muted-foreground">Order Fulfillment Rate</span>
                           <span className="font-bold">94%</span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Customer Retention</span>
+                        <div className="flex justify-between items-center pb-2 border-b">
+                          <span className="text-sm text-muted-foreground">Customer Retention</span>
                           <span className="font-bold">87%</span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
-                          <span className="text-sm">Inventory Accuracy</span>
+                        <div className="flex justify-between items-center pb-2 border-b">
+                          <span className="text-sm text-muted-foreground">Inventory Accuracy</span>
                           <span className="font-bold">99%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm">Vendor Performance</span>
+                          <span className="text-sm text-muted-foreground">Vendor Performance</span>
                           <span className="font-bold">96%</span>
                         </div>
                       </div>

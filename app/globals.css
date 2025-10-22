@@ -120,8 +120,37 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+  
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  
+  /* Code and monospace */
+  code, kbd, samp, pre {
+    @apply font-mono;
+  }
+}
+
+/* Typography utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Number formatting */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Scrollbar styling */
@@ -131,14 +160,19 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
+  @apply bg-border rounded;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
+  @apply bg-border/80;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
 }

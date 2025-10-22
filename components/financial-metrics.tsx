@@ -39,14 +39,14 @@ export function FinancialMetrics({ refreshTrigger }: FinancialMetricsProps) {
 
   if (loading) {
     return (
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {[...Array(5)].map((_, i) => (
-          <Card key={i} className="border-border/50">
+          <Card key={i}>
             <CardHeader className="pb-2">
               <Skeleton className="h-4 w-24" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-7 w-20" />
             </CardContent>
           </Card>
         ))}
@@ -57,11 +57,11 @@ export function FinancialMetrics({ refreshTrigger }: FinancialMetricsProps) {
   if (!metrics) return null
 
   return (
-    <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-      <Card className="border-border/50">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-green-500" />
+            <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-500" />
             Total Revenue
           </CardTitle>
         </CardHeader>
@@ -70,10 +70,10 @@ export function FinancialMetrics({ refreshTrigger }: FinancialMetricsProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <TrendingDown className="h-4 w-4 text-red-500" />
+            <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-500" />
             Total Expenses
           </CardTitle>
         </CardHeader>
@@ -82,18 +82,18 @@ export function FinancialMetrics({ refreshTrigger }: FinancialMetricsProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Profit</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className={`text-2xl font-bold ${metrics.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+          <div className={`text-2xl font-bold ${metrics.profit >= 0 ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"}`}>
             ${metrics.profit.toLocaleString()}
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Pending</CardTitle>
         </CardHeader>
@@ -102,12 +102,12 @@ export function FinancialMetrics({ refreshTrigger }: FinancialMetricsProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Overdue</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-destructive">${metrics.overdueInvoices.toLocaleString()}</div>
+          <div className="text-2xl font-bold text-red-600 dark:text-red-500">${metrics.overdueInvoices.toLocaleString()}</div>
         </CardContent>
       </Card>
     </div>

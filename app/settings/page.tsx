@@ -53,8 +53,8 @@ export default function SettingsPage() {
                 <TabsTrigger value="organization">Organization</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="account" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="account" className="mt-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Account Information</CardTitle>
                     <CardDescription>Update your account details</CardDescription>
@@ -77,8 +77,8 @@ export default function SettingsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="security" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="security" className="mt-4 space-y-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Password</CardTitle>
                     <CardDescription>Change your password</CardDescription>
@@ -100,7 +100,7 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-border/50">
+                <Card>
                   <CardHeader>
                     <CardTitle>Two-Factor Authentication</CardTitle>
                     <CardDescription>Add an extra layer of security</CardDescription>
@@ -117,8 +117,8 @@ export default function SettingsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="notifications" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="notifications" className="mt-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Notification Preferences</CardTitle>
                     <CardDescription>Manage how you receive notifications</CardDescription>
@@ -156,8 +156,8 @@ export default function SettingsPage() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="organization" className="space-y-4">
-                <Card className="border-border/50">
+              <TabsContent value="organization" className="mt-4">
+                <Card>
                   <CardHeader>
                     <CardTitle>Organization Settings</CardTitle>
                     <CardDescription>Manage organization-wide settings</CardDescription>

@@ -36,11 +36,11 @@ export function HRMetrics() {
   if (!metrics) return null
 
   return (
-    <div className="grid gap-4 md:grid-cols-4">
-      <Card className="border-border/50">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Users className="h-4 w-4" />
+            <Users className="h-4 w-4 text-muted-foreground" />
             Total Employees
           </CardTitle>
         </CardHeader>
@@ -49,10 +49,10 @@ export function HRMetrics() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <UserCheck className="h-4 w-4" />
+            <UserCheck className="h-4 w-4 text-green-600 dark:text-green-500" />
             Active
           </CardTitle>
         </CardHeader>
@@ -61,10 +61,10 @@ export function HRMetrics() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Clock className="h-4 w-4" />
+            <Clock className="h-4 w-4 text-orange-600 dark:text-orange-500" />
             On Leave
           </CardTitle>
         </CardHeader>
@@ -73,10 +73,10 @@ export function HRMetrics() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
+            <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-500" />
             Total Payroll
           </CardTitle>
         </CardHeader>

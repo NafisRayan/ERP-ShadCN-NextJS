@@ -45,9 +45,24 @@ export function DashboardCharts() {
   }, [])
 
   const inventoryData = [
-    { name: "In Stock", value: 65, fill: "hsl(var(--chart-1))" },
-    { name: "Low Stock", value: 25, fill: "hsl(var(--chart-2))" },
-    { name: "Out of Stock", value: 10, fill: "hsl(var(--chart-3))" },
+    { 
+      name: "In Stock", 
+      value: 65, 
+      fill: "hsl(var(--chart-1))",
+      color: "bg-[hsl(var(--chart-1))]"
+    },
+    { 
+      name: "Low Stock", 
+      value: 25, 
+      fill: "hsl(var(--chart-2))",
+      color: "bg-[hsl(var(--chart-2))]"
+    },
+    { 
+      name: "Out of Stock", 
+      value: 10, 
+      fill: "hsl(var(--chart-3))",
+      color: "bg-[hsl(var(--chart-3))]"
+    },
   ]
 
   if (loading) {
@@ -100,8 +115,14 @@ export function DashboardCharts() {
                   backgroundColor: "hsl(var(--popover))",
                   border: "1px solid hsl(var(--border))",
                   borderRadius: "var(--radius)",
+                  color: "hsl(var(--popover-foreground))",
                 }}
-                labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                itemStyle={{
+                  color: "hsl(var(--popover-foreground))",
+                }}
+                labelStyle={{ 
+                  color: "hsl(var(--popover-foreground))",
+                }}
               />
               <Legend />
               <Bar dataKey="revenue" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
@@ -112,43 +133,57 @@ export function DashboardCharts() {
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle>Inventory Status</CardTitle>
           <CardDescription>Stock distribution</CardDescription>
         </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={inventoryData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={2}
-                dataKey="value"
-              >
-                {inventoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "var(--radius)",
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="mt-4 space-y-2">
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-center">
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={inventoryData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {inventoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--popover))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                    color: "hsl(var(--popover-foreground))",
+                  }}
+                  itemStyle={{
+                    color: "hsl(var(--popover-foreground))",
+                  }}
+                  labelStyle={{ 
+                    color: "hsl(var(--popover-foreground))",
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="space-y-2">
             {inventoryData.map((item, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.fill }} />
-                  <span className="text-sm text-muted-foreground">{item.name}</span>
+              <div 
+                key={index} 
+                className="flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`h-3 w-3 rounded-full ${item.color}`} />
+                  <span className="text-sm font-medium">{item.name}</span>
                 </div>
-                <Badge variant="secondary">{item.value}%</Badge>
+                <Badge variant="secondary" className="font-semibold tabular-nums">
+                  {item.value}%
+                </Badge>
               </div>
             ))}
           </div>
