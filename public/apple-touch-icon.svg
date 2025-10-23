@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="appleBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle with rounded corners for iOS -->
+  <rect x="0" y="0" width="180" height="180" rx="40" ry="40" fill="url(#appleBg)"/>
+
+  <!-- ERP Icon - larger version -->
+  <g fill="white" transform="translate(30, 30)">
+    <!-- Bar chart -->
+    <rect x="24" y="36" width="6" height="18"/>
+    <rect x="33" y="27" width="6" height="27"/>
+    <rect x="42" y="33" width="6" height="21"/>
+    <rect x="51" y="24" width="6" height="30"/>
+    <rect x="60" y="30" width="6" height="24"/>
+
+    <!-- Trend line -->
+    <path d="M24 42 L33 33 L42 39 L51 30 L60 36" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Small accent dot -->
+  <circle cx="135" cy="45" r="4" fill="#fbbf24"/>
+</svg></content>
+<parameter name="filePath">c:\Users\BS00861\Documents\GitHub\ERP-ShadCN-NextJS\public\apple-touch-icon.svg
