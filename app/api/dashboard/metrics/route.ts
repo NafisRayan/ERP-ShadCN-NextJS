@@ -29,6 +29,26 @@ export async function GET(request: NextRequest) {
       $expr: { $lte: ["$quantity", "$reorderLevel"] },
     })
 
+    // Calculate month-over-month revenue change
+    const now = new Date()
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+    const lastMonthInvoices = await invoicesCollection.find({
+      status: "paid",
+      createdAt: { $gte: lastMonth, $lt: thisMonth }
+    }).toArray()
+    const lastMonthRevenue = lastMonthInvoices.reduce((sum: number, inv: any) => sum + (inv.total || 0), 0)
+
+    const revenueChange = lastMonthRevenue > 0
+      ? ((totalRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
+      : 0
+
+    // Calculate new hires this month
+    const newHires = await employeesCollection.countDocuments({
+      hireDate: { $gte: thisMonth }
+    })
+
     return NextResponse.json({
       totalRevenue: Math.round(totalRevenue * 100) / 100,
       totalOrders,
@@ -37,6 +57,8 @@ export async function GET(request: NextRequest) {
       pendingOrders,
       lowStockItems,
       totalProducts,
+      revenueChangePercent: Math.round(revenueChange * 100) / 100,
+      newHiresThisMonth: newHires,
     })
   } catch (error) {
     console.error("Dashboard metrics error:", error)

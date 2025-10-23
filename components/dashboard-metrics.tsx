@@ -13,6 +13,8 @@ interface Metrics {
   totalEmployees: number
   pendingOrders: number
   lowStockItems: number
+  revenueChangePercent: number
+  newHiresThisMonth: number
 }
 
 export function DashboardMetrics() {
@@ -62,9 +64,9 @@ export function DashboardMetrics() {
     {
       title: "Total Revenue",
       value: `$${metrics.totalRevenue.toLocaleString()}`,
-      change: "+20.1% from last month",
+      change: `${metrics.revenueChangePercent >= 0 ? '+' : ''}${metrics.revenueChangePercent.toFixed(1)}% from last month`,
       icon: TrendingUp,
-      trend: "up",
+      trend: metrics.revenueChangePercent >= 0 ? "up" : "down",
       iconBg: "bg-green-500/10 dark:bg-green-500/20",
       iconColor: "text-green-600 dark:text-green-500",
     },
@@ -89,7 +91,7 @@ export function DashboardMetrics() {
     {
       title: "Active Employees",
       value: metrics.totalEmployees.toString(),
-      change: "+8 new hires",
+      change: `+${metrics.newHiresThisMonth} new hires`,
       icon: Users,
       trend: "up",
       iconBg: "bg-purple-500/10 dark:bg-purple-500/20",
