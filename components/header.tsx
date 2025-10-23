@@ -19,15 +19,44 @@ import { useRouter } from "next/navigation"
 import { Bell, Search } from "lucide-react"
 import ThemeSelector from "@/components/theme-selector"
 
+interface Notification {
+  title: string
+  message: string
+  type: string
+}
+
+interface NotificationData {
+  count: number
+  notifications: Notification[]
+}
+
 export function Header() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [notifications, setNotifications] = useState<NotificationData>({ count: 0, notifications: [] })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const userData = localStorage.getItem("user")
     if (userData) {
       setUser(JSON.parse(userData))
     }
+  }, [])
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch("/api/dashboard/notifications")
+        const data = await response.json()
+        setNotifications(data)
+      } catch (error) {
+        console.error("Failed to fetch notifications:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchNotifications()
   }, [])
 
   const handleLogout = () => {
@@ -67,30 +96,32 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-4 w-4" />
-              <Badge 
-                variant="destructive" 
-                className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-              >
-                3
-              </Badge>
+              {notifications.count > 0 && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                >
+                  {notifications.count > 9 ? '9+' : notifications.count}
+                </Badge>
+              )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
             <DropdownMenuLabel>Notifications</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <div className="max-h-80 overflow-y-auto">
-              <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                <p className="text-sm font-medium">Low stock alert</p>
-                <p className="text-xs text-muted-foreground">12 items below reorder level</p>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                <p className="text-sm font-medium">Pending approvals</p>
-                <p className="text-xs text-muted-foreground">5 purchase orders awaiting review</p>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                <p className="text-sm font-medium">New order received</p>
-                <p className="text-xs text-muted-foreground">Order #1234 from Acme Corp</p>
-              </DropdownMenuItem>
+              {loading ? (
+                <div className="p-3 text-sm text-muted-foreground">Loading...</div>
+              ) : notifications.notifications.length > 0 ? (
+                notifications.notifications.map((notification, index) => (
+                  <DropdownMenuItem key={index} className="flex flex-col items-start gap-1 p-3">
+                    <p className="text-sm font-medium">{notification.title}</p>
+                    <p className="text-xs text-muted-foreground">{notification.message}</p>
+                  </DropdownMenuItem>
+                ))
+              ) : (
+                <div className="p-3 text-sm text-muted-foreground">No notifications</div>
+              )}
             </div>
           </DropdownMenuContent>
         </DropdownMenu>

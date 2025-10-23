@@ -24,16 +24,32 @@ interface ChartDataPoint {
   orders: number
 }
 
+interface InventoryStatusData {
+  name: string
+  value: number
+  fill: string
+  color: string
+  [key: string]: any // Allow additional properties for recharts compatibility
+}
+
 export function DashboardCharts() {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([])
+  const [inventoryData, setInventoryData] = useState<InventoryStatusData[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        const response = await fetch("/api/dashboard/chart-data")
-        const data = await response.json()
-        setChartData(data)
+        const [chartResponse, inventoryResponse] = await Promise.all([
+          fetch("/api/dashboard/chart-data"),
+          fetch("/api/dashboard/inventory-status")
+        ])
+
+        const chartDataResult = await chartResponse.json()
+        const inventoryDataResult = await inventoryResponse.json()
+
+        setChartData(chartDataResult)
+        setInventoryData(inventoryDataResult)
       } catch (error) {
         console.error("Failed to fetch chart data:", error)
       } finally {
@@ -43,27 +59,6 @@ export function DashboardCharts() {
 
     fetchChartData()
   }, [])
-
-  const inventoryData = [
-    { 
-      name: "In Stock", 
-      value: 65, 
-      fill: "hsl(var(--chart-1))",
-      color: "bg-[hsl(var(--chart-1))]"
-    },
-    { 
-      name: "Low Stock", 
-      value: 25, 
-      fill: "hsl(var(--chart-2))",
-      color: "bg-[hsl(var(--chart-2))]"
-    },
-    { 
-      name: "Out of Stock", 
-      value: 10, 
-      fill: "hsl(var(--chart-3))",
-      color: "bg-[hsl(var(--chart-3))]"
-    },
-  ]
 
   if (loading) {
     return (

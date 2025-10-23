@@ -11,10 +11,26 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line
 import { ReportSummary } from "@/components/report-summary"
 import { ExportButtons } from "@/components/export-buttons"
 
+interface KPIData {
+  kpis: {
+    orderFulfillmentRate: number
+    customerRetention: number
+    inventoryAccuracy: number
+    vendorPerformance: number
+  }
+  system: {
+    systemUptime: number
+    dataIntegrity: number
+    activeUsers: number
+    lastBackup: string
+  }
+}
+
 export default function ReportsPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [monthlyTrends, setMonthlyTrends] = useState([])
+  const [kpiData, setKpiData] = useState<KPIData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -24,16 +40,23 @@ export default function ReportsPage() {
       return
     }
     setIsAuthenticated(true)
-    fetchTrends()
+    fetchData()
   }, [router])
 
-  const fetchTrends = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch("/api/reports/monthly-trends")
-      const data = await response.json()
-      setMonthlyTrends(data)
+      const [trendsResponse, kpisResponse] = await Promise.all([
+        fetch("/api/reports/monthly-trends"),
+        fetch("/api/reports/kpis")
+      ])
+
+      const trendsData = await trendsResponse.json()
+      const kpisData = await kpisResponse.json()
+
+      setMonthlyTrends(trendsData)
+      setKpiData(kpisData)
     } catch (error) {
-      console.error("Failed to fetch trends:", error)
+      console.error("Failed to fetch data:", error)
     } finally {
       setLoading(false)
     }
@@ -129,19 +152,19 @@ export default function ReportsPage() {
                       <div className="space-y-4">
                         <div className="flex justify-between items-center pb-2 border-b">
                           <span className="text-sm text-muted-foreground">Order Fulfillment Rate</span>
-                          <span className="font-bold">94%</span>
+                          <span className="font-bold">{kpiData?.kpis.orderFulfillmentRate || 0}%</span>
                         </div>
                         <div className="flex justify-between items-center pb-2 border-b">
                           <span className="text-sm text-muted-foreground">Customer Retention</span>
-                          <span className="font-bold">87%</span>
+                          <span className="font-bold">{kpiData?.kpis.customerRetention || 0}%</span>
                         </div>
                         <div className="flex justify-between items-center pb-2 border-b">
                           <span className="text-sm text-muted-foreground">Inventory Accuracy</span>
-                          <span className="font-bold">99%</span>
+                          <span className="font-bold">{kpiData?.kpis.inventoryAccuracy || 0}%</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Vendor Performance</span>
-                          <span className="font-bold">96%</span>
+                          <span className="font-bold">{kpiData?.kpis.vendorPerformance || 0}%</span>
                         </div>
                       </div>
                     </CardContent>
@@ -156,19 +179,19 @@ export default function ReportsPage() {
                     <div className="space-y-4">
                       <div className="flex justify-between items-center pb-2 border-b">
                         <span className="text-sm">System Uptime</span>
-                        <span className="font-bold text-green-600 dark:text-green-500">99.9%</span>
+                        <span className="font-bold text-green-600 dark:text-green-500">{kpiData?.system.systemUptime || 0}%</span>
                       </div>
                       <div className="flex justify-between items-center pb-2 border-b">
                         <span className="text-sm">Data Integrity</span>
-                        <span className="font-bold text-green-600 dark:text-green-500">100%</span>
+                        <span className="font-bold text-green-600 dark:text-green-500">{kpiData?.system.dataIntegrity || 0}%</span>
                       </div>
                       <div className="flex justify-between items-center pb-2 border-b">
                         <span className="text-sm">Active Users</span>
-                        <span className="font-bold">12</span>
+                        <span className="font-bold">{kpiData?.system.activeUsers || 0}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Last Backup</span>
-                        <span className="font-bold">2 hours ago</span>
+                        <span className="font-bold">{kpiData?.system.lastBackup || "Unknown"}</span>
                       </div>
                     </div>
                   </CardContent>
