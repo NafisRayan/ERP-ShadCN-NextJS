@@ -13,7 +13,7 @@ import {
 // and write the current theme.
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
-    <NextThemesProvider {...props} attribute="class" defaultTheme="system">
+    <NextThemesProvider {...props} attribute="class" defaultTheme="dark">
       {children}
     </NextThemesProvider>
   )
