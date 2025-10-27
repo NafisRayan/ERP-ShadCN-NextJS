@@ -112,7 +112,7 @@ export function InventoryTable({ onEdit, onDelete, refreshTrigger }: InventoryTa
                   <TableCell>
                     <Badge variant="outline">{product.category}</Badge>
                   </TableCell>
-                  <TableCell className="text-right">${product.price.toFixed(2)}</TableCell>
+                  <TableCell className="text-right">${Number(product.price || 0).toFixed(2)}</TableCell>
                   <TableCell className="text-right font-medium">{product.quantity}</TableCell>
                   <TableCell className="text-right text-muted-foreground">{product.reorderLevel}</TableCell>
                   <TableCell>

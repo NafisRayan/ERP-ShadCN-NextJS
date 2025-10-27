@@ -218,14 +218,14 @@ export function CreateOrderDialog({ onOrderCreated }: CreateOrderDialogProps) {
                         {item.productName} x {item.quantity}
                       </span>
                       <div className="flex gap-2 items-center">
-                        <span>${item.total.toFixed(2)}</span>
+                        <span>${Number(item.total || 0).toFixed(2)}</span>
                         <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(idx)}>
                           Remove
                         </Button>
                       </div>
                     </div>
                   ))}
-                  <div className="border-t pt-2 font-semibold">Total: ${totalAmount.toFixed(2)}</div>
+                  <div className="border-t pt-2 font-semibold">Total: ${Number(totalAmount || 0).toFixed(2)}</div>
                 </div>
               )}
             </div>
