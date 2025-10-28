@@ -11,6 +11,8 @@ import { PurchaseOrdersTable } from "@/components/purchase-orders-table"
 import { VendorsTable } from "@/components/vendors-table"
 import { CreatePODialog } from "@/components/create-po-dialog"
 import { AddVendorDialog } from "@/components/add-vendor-dialog"
+import { ViewPurchaseOrderDialog } from "@/components/view-purchase-order-dialog"
+import { ViewVendorDialog } from "@/components/view-vendor-dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { FileText, FileClock, DollarSign, CheckCircle } from "lucide-react"
 
@@ -20,6 +22,10 @@ export default function PurchasingPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [metrics, setMetrics] = useState({ totalPOs: 0, draftPOs: 0, totalSpend: 0, receivedPOs: 0 })
   const [loading, setLoading] = useState(true)
+  const [viewPOId, setViewPOId] = useState<string | null>(null)
+  const [viewVendorId, setViewVendorId] = useState<string | null>(null)
+  const [viewPODialogOpen, setViewPODialogOpen] = useState(false)
+  const [viewVendorDialogOpen, setViewVendorDialogOpen] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -60,11 +66,12 @@ export default function PurchasingPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to delete PO")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to delete PO")
       }
     } catch (error) {
       console.error("Failed to delete PO:", error)
-      alert("Failed to delete PO")
+      alert("Network error: Failed to delete PO")
     }
   }
 
@@ -79,11 +86,12 @@ export default function PurchasingPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to update PO status")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to update PO status")
       }
     } catch (error) {
       console.error("Failed to update PO status:", error)
-      alert("Failed to update PO status")
+      alert("Network error: Failed to update PO status")
     }
   }
 
@@ -95,12 +103,23 @@ export default function PurchasingPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to delete vendor")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to delete vendor")
       }
     } catch (error) {
       console.error("Failed to delete vendor:", error)
-      alert("Failed to delete vendor")
+      alert("Network error: Failed to delete vendor")
     }
+  }
+
+  const handleViewPO = (poId: string) => {
+    setViewPOId(poId)
+    setViewPODialogOpen(true)
+  }
+
+  const handleViewVendor = (vendorId: string) => {
+    setViewVendorId(vendorId)
+    setViewVendorDialogOpen(true)
   }
 
   if (!isAuthenticated) return null
@@ -203,6 +222,7 @@ export default function PurchasingPage() {
                   <PurchaseOrdersTable
                     onDelete={handleDeletePO}
                     onStatusChange={handleStatusChange}
+                    onView={handleViewPO}
                     refreshTrigger={refreshTrigger}
                   />
                 </CardContent>
@@ -219,13 +239,25 @@ export default function PurchasingPage() {
                   <CardDescription>All vendor information</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 sm:p-6">
-                  <VendorsTable onDelete={handleDeleteVendor} refreshTrigger={refreshTrigger} />
+                  <VendorsTable onDelete={handleDeleteVendor} onView={handleViewVendor} refreshTrigger={refreshTrigger} />
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
         </main>
       </SidebarInset>
+
+      <ViewPurchaseOrderDialog
+        poId={viewPOId}
+        open={viewPODialogOpen}
+        onOpenChange={setViewPODialogOpen}
+      />
+
+      <ViewVendorDialog
+        vendorId={viewVendorId}
+        open={viewVendorDialogOpen}
+        onOpenChange={setViewVendorDialogOpen}
+      />
     </SidebarProvider>
   )
 }

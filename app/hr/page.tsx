@@ -20,12 +20,15 @@ import {
 import { Plus } from "lucide-react"
 import { HRMetrics } from "@/components/hr-metrics"
 import { EmployeesTable } from "@/components/employees-table"
+import { EditEmployeeDialog } from "@/components/edit-employee-dialog"
 
 export default function HRPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [editEmployeeId, setEditEmployeeId] = useState<string | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -61,6 +64,15 @@ export default function HRPage() {
         console.error("Failed to add employee:", error)
       }
     }
+  }
+
+  const handleEditEmployee = (employeeId: string) => {
+    setEditEmployeeId(employeeId)
+    setEditDialogOpen(true)
+  }
+
+  const handleEmployeeUpdated = () => {
+    setRefreshKey((prev) => prev + 1)
   }
 
   if (!isAuthenticated) return null
@@ -149,11 +161,18 @@ export default function HRPage() {
               <CardDescription>All employees in the organization</CardDescription>
             </CardHeader>
             <CardContent className="p-0 sm:p-6">
-              <EmployeesTable key={refreshKey} onRefresh={() => setRefreshKey((prev) => prev + 1)} />
+              <EmployeesTable key={refreshKey} onRefresh={() => setRefreshKey((prev) => prev + 1)} onEdit={handleEditEmployee} />
             </CardContent>
           </Card>
         </main>
       </SidebarInset>
+
+      <EditEmployeeDialog
+        employeeId={editEmployeeId}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onEmployeeUpdated={handleEmployeeUpdated}
+      />
     </SidebarProvider>
   )
 }

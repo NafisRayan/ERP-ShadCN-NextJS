@@ -8,14 +8,32 @@ import { Header } from "@/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { InventoryTable } from "@/components/inventory-table"
 import { AddProductDialog } from "@/components/add-product-dialog"
+import { ViewProductDialog } from "@/components/view-product-dialog"
+import { EditProductDialog } from "@/components/edit-product-dialog"
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function InventoryPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [lowStockCount, setLowStockCount] = useState(0)
+  const [viewProductId, setViewProductId] = useState<string | null>(null)
+  const [editProductId, setEditProductId] = useState<string | null>(null)
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [productToDelete, setProductToDelete] = useState<string | null>(null)
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -41,20 +59,45 @@ export default function InventoryPage() {
     fetchLowStockCount()
   }, [refreshTrigger])
 
-  const handleDeleteProduct = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return
+  const handleViewProduct = (productId: string) => {
+    setViewProductId(productId)
+    setViewDialogOpen(true)
+  }
+
+  const handleEditProduct = (productId: string) => {
+    setEditProductId(productId)
+    setEditDialogOpen(true)
+  }
+
+  const handleDeleteProduct = (productId: string) => {
+    setProductToDelete(productId)
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDeleteProduct = async () => {
+    if (!productToDelete) return
 
     try {
-      const response = await fetch(`/api/inventory/products/${id}`, { method: "DELETE" })
-      if (response.ok) {
-        setRefreshTrigger((prev) => prev + 1)
-      } else {
-        alert("Failed to delete product")
+      const response = await fetch(`/api/inventory/products/${productToDelete}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to delete product")
       }
+
+      setRefreshTrigger((prev) => prev + 1)
+      setDeleteDialogOpen(false)
+      setProductToDelete(null)
     } catch (error) {
       console.error("Failed to delete product:", error)
-      alert("Failed to delete product")
+      alert(error instanceof Error ? error.message : "Failed to delete product")
     }
+  }
+
+  const handleProductUpdated = () => {
+    setRefreshTrigger((prev) => prev + 1)
   }
 
   if (!isAuthenticated) return null
@@ -96,14 +139,45 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent className="p-0 sm:p-6">
               <InventoryTable
-                onEdit={(product) => console.log("Edit:", product)}
+                onEdit={handleEditProduct}
                 onDelete={handleDeleteProduct}
+                onView={handleViewProduct}
                 refreshTrigger={refreshTrigger}
               />
             </CardContent>
           </Card>
         </main>
       </SidebarInset>
+
+      <ViewProductDialog
+        productId={viewProductId}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+      />
+
+      <EditProductDialog
+        productId={editProductId}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onProductUpdated={handleProductUpdated}
+      />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Product</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this product? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteProduct} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   )
 }

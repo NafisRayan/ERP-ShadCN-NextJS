@@ -4,8 +4,9 @@ import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const db = await connectDB()
-    const employee = await db.collection("employees").findOne({ _id: new ObjectId(params.id) })
+    const employee = await db.collection("employees").findOne({ _id: new ObjectId(id) })
     if (!employee) return NextResponse.json({ error: "Employee not found" }, { status: 404 })
     return NextResponse.json(employee)
   } catch (error) {
@@ -15,13 +16,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const data = await request.json()
     const db = await connectDB()
 
     const result = await db
       .collection("employees")
       .updateOne(
-        { _id: new ObjectId(params.id) },
+        { _id: new ObjectId(id) },
         { $set: { ...data, salary: Number(data.salary), updatedAt: new Date() } },
       )
 
@@ -34,8 +36,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const db = await connectDB()
-    const result = await db.collection("employees").deleteOne({ _id: new ObjectId(params.id) })
+    const result = await db.collection("employees").deleteOne({ _id: new ObjectId(id) })
 
     if (result.deletedCount === 0) return NextResponse.json({ error: "Employee not found" }, { status: 404 })
     return NextResponse.json({ success: true })

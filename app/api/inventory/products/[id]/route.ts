@@ -4,8 +4,9 @@ import { ObjectId } from "mongodb"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const productsCollection = await getCollection("products")
-    const product = await productsCollection.findOne({ _id: new ObjectId(params.id) })
+    const product = await productsCollection.findOne({ _id: new ObjectId(id) })
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const body = await request.json()
     const productsCollection = await getCollection("products")
 
@@ -29,7 +31,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const result = await productsCollection.findOneAndUpdate(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updatedProduct },
       { returnDocument: "after" },
     )
@@ -47,8 +49,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const productsCollection = await getCollection("products")
-    const result = await productsCollection.deleteOne({ _id: new ObjectId(params.id) })
+    const result = await productsCollection.deleteOne({ _id: new ObjectId(id) })
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })

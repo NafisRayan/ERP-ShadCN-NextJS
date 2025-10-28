@@ -4,8 +4,9 @@ import { ObjectId } from "mongodb"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const posCollection = await getCollection("purchase_orders")
-    const po = await posCollection.findOne({ _id: new ObjectId(params.id) })
+    const po = await posCollection.findOne({ _id: new ObjectId(id) })
 
     if (!po) {
       return NextResponse.json({ error: "Purchase order not found" }, { status: 404 })
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const body = await request.json()
     const posCollection = await getCollection("purchase_orders")
 
@@ -29,7 +31,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const result = await posCollection.findOneAndUpdate(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updatedPO },
       { returnDocument: "after" },
     )
@@ -47,8 +49,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const posCollection = await getCollection("purchase_orders")
-    const result = await posCollection.deleteOne({ _id: new ObjectId(params.id) })
+    const result = await posCollection.deleteOne({ _id: new ObjectId(id) })
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: "Purchase order not found" }, { status: 404 })

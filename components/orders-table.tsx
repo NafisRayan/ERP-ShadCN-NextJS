@@ -20,10 +20,11 @@ interface Order {
 interface OrdersTableProps {
   onDelete: (id: string) => void
   onStatusChange: (id: string, status: string) => void
+  onView?: (orderId: string) => void
   refreshTrigger: number
 }
 
-export function OrdersTable({ onDelete, onStatusChange, refreshTrigger }: OrdersTableProps) {
+export function OrdersTable({ onDelete, onStatusChange, onView, refreshTrigger }: OrdersTableProps) {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -103,7 +104,12 @@ export function OrdersTable({ onDelete, onStatusChange, refreshTrigger }: Orders
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onView && onView(order._id)}
+                      disabled={!onView}
+                    >
                       <Eye />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => onDelete(order._id)}>

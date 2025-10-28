@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Edit2, Trash2, Search } from "lucide-react"
+import { Edit2, Trash2, Search, Eye } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -28,12 +28,13 @@ interface Product {
 }
 
 interface InventoryTableProps {
-  onEdit: (product: Product) => void
+  onEdit: (productId: string) => void
   onDelete: (id: string) => void
+  onView?: (productId: string) => void
   refreshTrigger: number
 }
 
-export function InventoryTable({ onEdit, onDelete, refreshTrigger }: InventoryTableProps) {
+export function InventoryTable({ onEdit, onDelete, onView, refreshTrigger }: InventoryTableProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -131,7 +132,13 @@ export function InventoryTable({ onEdit, onDelete, refreshTrigger }: InventoryTa
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onEdit(product)}>
+                        {onView && (
+                          <DropdownMenuItem onClick={() => onView(product._id)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem onClick={() => onEdit(product._id)}>
                           <Edit2 className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>

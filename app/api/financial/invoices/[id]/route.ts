@@ -4,8 +4,9 @@ import { ObjectId } from "mongodb"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const invoicesCollection = await getCollection("invoices")
-    const invoice = await invoicesCollection.findOne({ _id: new ObjectId(params.id) })
+    const invoice = await invoicesCollection.findOne({ _id: new ObjectId(id) })
 
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 })
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const body = await request.json()
     const invoicesCollection = await getCollection("invoices")
 
@@ -29,7 +31,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const result = await invoicesCollection.findOneAndUpdate(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updatedInvoice },
       { returnDocument: "after" },
     )
@@ -47,8 +49,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params
     const invoicesCollection = await getCollection("invoices")
-    const result = await invoicesCollection.deleteOne({ _id: new ObjectId(params.id) })
+    const result = await invoicesCollection.deleteOne({ _id: new ObjectId(id) })
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 })

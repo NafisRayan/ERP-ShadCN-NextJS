@@ -8,12 +8,15 @@ import { Header } from "@/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { InvoicesTable } from "@/components/invoices-table"
 import { CreateInvoiceDialog } from "@/components/create-invoice-dialog"
+import { ViewInvoiceDialog } from "@/components/view-invoice-dialog"
 import { FinancialMetrics } from "@/components/financial-metrics"
 
 export default function InvoicesPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [viewInvoiceId, setViewInvoiceId] = useState<string | null>(null)
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -32,11 +35,12 @@ export default function InvoicesPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to delete invoice")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to delete invoice")
       }
     } catch (error) {
       console.error("Failed to delete invoice:", error)
-      alert("Failed to delete invoice")
+      alert("Network error: Failed to delete invoice")
     }
   }
 
@@ -51,11 +55,60 @@ export default function InvoicesPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to update invoice status")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to update invoice status")
       }
     } catch (error) {
       console.error("Failed to update invoice status:", error)
-      alert("Failed to update invoice status")
+      alert("Network error: Failed to update invoice status")
+    }
+  }
+
+  const handleViewInvoice = (invoiceId: string) => {
+    setViewInvoiceId(invoiceId)
+    setViewDialogOpen(true)
+  }
+
+  const handleDownloadInvoice = async (invoiceId: string) => {
+    try {
+      const response = await fetch(`/api/financial/invoices/${invoiceId}`)
+      const invoice = await response.json()
+
+      if (!invoice) {
+        alert("Invoice not found")
+        return
+      }
+
+      // Create a simple text-based invoice for download
+      const invoiceText = `
+INVOICE
+=======
+Invoice Number: ${invoice.invoiceNumber}
+Customer: ${invoice.customerName}
+Issue Date: ${new Date(invoice.issueDate).toLocaleDateString()}
+Due Date: ${new Date(invoice.dueDate).toLocaleDateString()}
+Status: ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+
+Amount: $${Number(invoice.amount || 0).toFixed(2)}
+Tax: $${Number(invoice.tax || 0).toFixed(2)}
+Total: $${Number(invoice.total || 0).toFixed(2)}
+
+Generated on: ${new Date().toLocaleString()}
+      `.trim()
+
+      // Create and download the file
+      const blob = new Blob([invoiceText], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `invoice-${invoice.invoiceNumber}.txt`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Failed to download invoice:", error)
+      alert("Failed to download invoice")
     }
   }
 
@@ -88,12 +141,20 @@ export default function InvoicesPage() {
               <InvoicesTable
                 onDelete={handleDeleteInvoice}
                 onStatusChange={handleStatusChange}
+                onView={handleViewInvoice}
+                onDownload={handleDownloadInvoice}
                 refreshTrigger={refreshTrigger}
               />
             </CardContent>
           </Card>
         </main>
       </SidebarInset>
+
+      <ViewInvoiceDialog
+        invoiceId={viewInvoiceId}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+      />
     </SidebarProvider>
   )
 }

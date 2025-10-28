@@ -21,10 +21,12 @@ interface Invoice {
 interface InvoicesTableProps {
   onDelete: (id: string) => void
   onStatusChange: (id: string, status: string) => void
+  onView?: (invoiceId: string) => void
+  onDownload?: (invoiceId: string) => void
   refreshTrigger: number
 }
 
-export function InvoicesTable({ onDelete, onStatusChange, refreshTrigger }: InvoicesTableProps) {
+export function InvoicesTable({ onDelete, onStatusChange, onView, onDownload, refreshTrigger }: InvoicesTableProps) {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -115,12 +117,24 @@ export function InvoicesTable({ onDelete, onStatusChange, refreshTrigger }: Invo
                 <TableCell>{new Date(invoice.dueDate).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Download className="h-4 w-4" />
-                    </Button>
+                    {onView && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onView(invoice._id)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {onDownload && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDownload(invoice._id)}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    )}
                     <Button variant="ghost" size="sm" onClick={() => onDelete(invoice._id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

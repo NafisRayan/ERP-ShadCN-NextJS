@@ -9,11 +9,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { SalesMetrics } from "@/components/sales-metrics"
 import { OrdersTable } from "@/components/orders-table"
 import { CreateOrderDialog } from "@/components/create-order-dialog"
+import { ViewOrderDialog } from "@/components/view-order-dialog"
 
 export default function SalesPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [viewOrderId, setViewOrderId] = useState<string | null>(null)
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -32,11 +35,12 @@ export default function SalesPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to delete order")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to delete order")
       }
     } catch (error) {
       console.error("Failed to delete order:", error)
-      alert("Failed to delete order")
+      alert("Network error: Failed to delete order")
     }
   }
 
@@ -51,12 +55,18 @@ export default function SalesPage() {
       if (response.ok) {
         setRefreshTrigger((prev) => prev + 1)
       } else {
-        alert("Failed to update order status")
+        const errorData = await response.json()
+        alert(errorData.error || "Failed to update order status")
       }
     } catch (error) {
       console.error("Failed to update order status:", error)
-      alert("Failed to update order status")
+      alert("Network error: Failed to update order status")
     }
+  }
+
+  const handleViewOrder = (orderId: string) => {
+    setViewOrderId(orderId)
+    setViewDialogOpen(true)
   }
 
   if (!isAuthenticated) return null
@@ -88,12 +98,19 @@ export default function SalesPage() {
               <OrdersTable
                 onDelete={handleDeleteOrder}
                 onStatusChange={handleStatusChange}
+                onView={handleViewOrder}
                 refreshTrigger={refreshTrigger}
               />
             </CardContent>
           </Card>
         </main>
       </SidebarInset>
+
+      <ViewOrderDialog
+        orderId={viewOrderId}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+      />
     </SidebarProvider>
   )
 }

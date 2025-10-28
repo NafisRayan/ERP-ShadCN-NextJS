@@ -10,10 +10,11 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       return NextResponse.json({ error: "Status is required" }, { status: 400 })
     }
 
+    const { id } = await params
     const invoicesCollection = await getCollection("invoices")
 
     const result = await invoicesCollection.findOneAndUpdate(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: { status, updatedAt: new Date() } },
       { returnDocument: "after" },
     )

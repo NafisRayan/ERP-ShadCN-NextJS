@@ -17,7 +17,7 @@ interface Employee {
   status: string
 }
 
-export function EmployeesTable({ onRefresh }: { onRefresh?: () => void }) {
+export function EmployeesTable({ onRefresh, onEdit }: { onRefresh?: () => void; onEdit?: (employeeId: string) => void }) {
   const [employees, setEmployees] = useState<Employee[]>([])
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -52,11 +52,17 @@ export function EmployeesTable({ onRefresh }: { onRefresh?: () => void }) {
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this employee?")) {
       try {
-        await fetch(`/api/hr/employees/${id}`, { method: "DELETE" })
-        fetchEmployees()
-        onRefresh?.()
+        const response = await fetch(`/api/hr/employees/${id}`, { method: "DELETE" })
+        if (response.ok) {
+          fetchEmployees()
+          onRefresh?.()
+        } else {
+          const errorData = await response.json()
+          alert(errorData.error || "Failed to delete employee")
+        }
       } catch (error) {
         console.error("Failed to delete employee:", error)
+        alert("Network error: Failed to delete employee")
       }
     }
   }
@@ -103,9 +109,11 @@ export function EmployeesTable({ onRefresh }: { onRefresh?: () => void }) {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
+                    {onEdit && (
+                      <Button variant="ghost" size="sm" onClick={() => onEdit(employee._id)}>
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                     <Button variant="ghost" size="sm" onClick={() => handleDelete(employee._id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

@@ -20,10 +20,11 @@ interface PurchaseOrder {
 interface PurchaseOrdersTableProps {
   onDelete: (id: string) => void
   onStatusChange: (id: string, status: string) => void
+  onView?: (poId: string) => void
   refreshTrigger: number
 }
 
-export function PurchaseOrdersTable({ onDelete, onStatusChange, refreshTrigger }: PurchaseOrdersTableProps) {
+export function PurchaseOrdersTable({ onDelete, onStatusChange, onView, refreshTrigger }: PurchaseOrdersTableProps) {
   const [pos, setPos] = useState<PurchaseOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -112,7 +113,12 @@ export function PurchaseOrdersTable({ onDelete, onStatusChange, refreshTrigger }
                 <TableCell>{new Date(po.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onView && onView(po._id)}
+                      disabled={!onView}
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => onDelete(po._id)}>

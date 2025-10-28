@@ -12,15 +12,15 @@
   "categories": ["business", "productivity"],
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/favicon.ico",
       "sizes": "32x32",
-      "type": "image/svg+xml",
+      "type": "image/x-icon",
       "purpose": "any maskable"
     },
     {
-      "src": "/apple-touch-icon.svg",
+      "src": "/favicon.ico",
       "sizes": "180x180",
-      "type": "image/svg+xml",
+      "type": "image/x-icon",
       "purpose": "any maskable"
     }
   ],
@@ -30,21 +30,21 @@
       "short_name": "Dashboard",
       "description": "View business overview and metrics",
       "url": "/dashboard",
-      "icons": [{ "src": "/favicon.svg", "sizes": "32x32" }]
+      "icons": [{ "src": "/favicon.ico", "sizes": "32x32" }]
     },
     {
       "name": "Inventory",
       "short_name": "Inventory",
       "description": "Manage product inventory",
       "url": "/inventory",
-      "icons": [{ "src": "/favicon.svg", "sizes": "32x32" }]
+      "icons": [{ "src": "/favicon.ico", "sizes": "32x32" }]
     },
     {
       "name": "Sales",
       "short_name": "Sales",
       "description": "Manage sales orders",
       "url": "/sales",
-      "icons": [{ "src": "/favicon.svg", "sizes": "32x32" }]
+      "icons": [{ "src": "/favicon.ico", "sizes": "32x32" }]
     }
   ]
 }

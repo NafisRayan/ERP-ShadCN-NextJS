@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Edit2, Trash2 } from "lucide-react"
+import { Edit2, Trash2, Eye } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface Vendor {
@@ -19,10 +19,12 @@ interface Vendor {
 
 interface VendorsTableProps {
   onDelete: (id: string) => void
+  onView?: (vendorId: string) => void
+  onEdit?: (vendorId: string) => void
   refreshTrigger: number
 }
 
-export function VendorsTable({ onDelete, refreshTrigger }: VendorsTableProps) {
+export function VendorsTable({ onDelete, onView, onEdit, refreshTrigger }: VendorsTableProps) {
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -93,9 +95,24 @@ export function VendorsTable({ onDelete, refreshTrigger }: VendorsTableProps) {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
+                    {onView && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onView(vendor._id)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {onEdit && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(vendor._id)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                     <Button variant="ghost" size="sm" onClick={() => onDelete(vendor._id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
